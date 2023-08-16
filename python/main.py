@@ -1,5 +1,6 @@
-from itertools import count
-import crypto as c
+from crypto_api.math_lib import misc
+from crypto_api.cramer_shoup import cramer_shoup_encryption
+
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 # h = c.H()
 # g = c.G()
@@ -59,29 +60,36 @@ def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 # print("bob", bobKey)
 
 
+alice_prime = misc.gen_prime(0, 330)
+alice_generator = misc.gen_generator(alice_prime)
 
-# Alice = c.CramerShoup()
-# Bob = c.CramerShoup()
+bob_prime = misc.gen_prime(330, 621)
+bob_generator = misc.gen_generator(bob_prime)
 
-# m1 = 7983 % Bob.p
-# m2 = 8880 % Bob.p
-# print("m1: ", m1)
-# print("m2: ", m2)
 
-# C1 = Alice.enc(Bob.getPublicKey(), m1)
-# C2 = Alice.enc(Bob.getPublicKey(), m2)
-# C3 = {}
-# for key in C1:
-#     C3[key] = c.CramerShoup.mul_mod(Bob, C1[key], C2[key], Bob.p)
+Alice = cramer_shoup_encryption.CramerShoupEncryption.key_gen(alice_prime, alice_generator)
+Bob = cramer_shoup_encryption.CramerShoupEncryption.key_gen(bob_prime, bob_generator)
 
-# print("C1: ", C1)
-# print("C2: ", C2)
-# print("C3: ", C3)
 
-# dec_m1 = Bob.dec(C1)
-# print("dec m1: ", dec_m1)
-# dec_m2 = Bob.dec(C2)
-# print("dec m2: ", dec_m2)
+m1 = 7983 % Bob.key_params.prime
+m2 = 8880 % Bob.key_params.prime
+print("m1: ", m1)
+print("m2: ", m2)
+
+C1 = cramer_shoup_encryption.CramerShoupEncryption.enc(Bob.public_key, Alice.key_params, m1)
+C2 = cramer_shoup_encryption.CramerShoupEncryption.enc(Bob.public_key, Alice.key_params, m2)
+#C3 = {}
+#for key in C1:
+#     C3[key] = c.cramer_shoup.mul_mod(Bob, C1[key], C2[key], Bob.p)
+
+print("C1: ", C1)
+print("C2: ", C2)
+#print("C3: ", C3)
+
+dec_m1 = cramer_shoup_encryption.CramerShoupEncryption.dec(Bob.secret_key, Bob.key_params, C1)
+print("dec m1: ", dec_m1)
+dec_m2 = cramer_shoup_encryption.CramerShoupEncryption.dec(Bob.secret_key, Bob.key_params, C2)
+print("dec m2: ", dec_m2)
 
 # print("homomorphism - Test")
 # dec_m3 = Bob.dec(C3)
@@ -103,32 +111,32 @@ def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 # print("Decrypted", mDec)
 
 # ------------------------------- Threshhold El-Gamal -------------------------------------------
-playerCount = 3
-securityParameter = 100
-
-
-thElGamal = c.Threshhold_ElGamal(playerCount,securityParameter)
-pKey, sKeys = thElGamal.keyGen()
-
-print("Secret Keys: ", sKeys)
-print("Public Key: ", pKey)
-
-sKey = thElGamal.calcSecretKey(sKeys)
-print("Calculated Secret Key:", sKey)
-
-m = 2345
-print ("Original Message: ", m)
-
-mEnc = thElGamal.encrypt(pKey, m)
-print ("Encrypted Message: ", mEnc)
-
-mDec = thElGamal.decrypt(sKeys, mEnc)
-print ("Decrypted Message:", mDec)
-
-
-
-f = c.FDH_RSA()
-pk, sk = f.key_gen()
-m = "Hallo"
-sign = f.sign(sk, m)
-print("Verifikation:", f.verify(pk, m, sign))
+# playerCount = 3
+# securityParameter = 100
+#
+#
+# thElGamal = c.Threshhold_ElGamal(playerCount,securityParameter)
+# pKey, sKeys = thElGamal.keyGen()
+#
+# print("Secret Keys: ", sKeys)
+# print("Public Key: ", pKey)
+#
+# sKey = thElGamal.calcSecretKey(sKeys)
+# print("Calculated Secret Key:", sKey)
+#
+# m = 2345
+# print ("Original Message: ", m)
+#
+# mEnc = thElGamal.encrypt(pKey, m)
+# print ("Encrypted Message: ", mEnc)
+#
+# mDec = thElGamal.decrypt(sKeys, mEnc)
+# print ("Decrypted Message:", mDec)
+#
+#
+#
+# f = c.FDH_RSA()
+# pk, sk = f.key_gen()
+# m = "Hallo"
+# sign = f.sign(sk, m)
+# print("Verifikation:", f.verify(pk, m, sign))
