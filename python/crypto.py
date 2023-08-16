@@ -9,22 +9,6 @@ from typing import Tuple
         return x, bigX
 '''
 
-class ElGamal(DiffieHellman):
-    def enc(self, pub, m):
-        (y, gY) = self.sample()
-        c2 = self.mul_mod(self.key(pub, y), m, self.p)
-        c1 = gY
-        return c1, c2
-
-    def dec(self, sec, c):
-        c1, c2 = c
-        sharedKey = self.key(c1, sec)
-        sharedKeyInv = self.mul_invert_mod(sharedKey, self.p)
-        return self.mul_mod(c2, sharedKeyInv, self.p)
-
-    def keyGen(self):
-        return self.sample()
-
 class Threshhold_ElGamal(ElGamal):
     def __init__(self, players, secPar):
         self.players = players

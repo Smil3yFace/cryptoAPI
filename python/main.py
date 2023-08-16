@@ -1,5 +1,6 @@
 from crypto_api.math_lib import misc
 from crypto_api.cramer_shoup import cramer_shoup_encryption
+from crypto_api.elgamal import elgamal_encryption
 
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 # h = c.H()
@@ -97,18 +98,23 @@ print("dec m2: ", dec_m2)
 # print("dec m3: ", dec_m3)
 
 
-# eg = c.ElGamal()
-# sec, pub = eg.keyGen()
-# print ("Public Key: ", pub)
-# print ("Secret Key: ", sec)
-# m = 32
-# print("Original Message", m)
+p = misc.gen_prime(3, 621)
+g = misc.gen_generator(p)
 
-# mEnc = eg.enc(pub, m)
-# print("Encrypted", mEnc)
+Bob = elgamal_encryption.ElGamalEncryption.key_gen(p, g)
+Alice = elgamal_encryption.ElGamalEncryption.key_gen(p, g)
 
-# mDec = eg.dec(sec, mEnc)
-# print("Decrypted", mDec)
+print("Bob keys: ", Bob.public_key, Bob.secret_key)
+print("Alice Key: ", Alice.public_key, Alice.secret_key)
+
+m = 32
+print("Original Message", m)
+
+mEnc = elgamal_encryption.ElGamalEncryption.enc(Alice.public_key, Bob.key_params, m)
+print("Encrypted", mEnc.c1, mEnc.c2)
+
+mDec = elgamal_encryption.ElGamalEncryption.dec(Alice.secret_key, Alice.key_params, mEnc)
+print("Decrypted", mDec)
 
 # ------------------------------- Threshhold El-Gamal -------------------------------------------
 # playerCount = 3
