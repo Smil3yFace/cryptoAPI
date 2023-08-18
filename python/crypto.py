@@ -9,6 +9,7 @@ from typing import Tuple
         return x, bigX
 '''
 
+'''
 class Threshhold_ElGamal(ElGamal):
     def __init__(self, players, secPar):
         self.players = players
@@ -30,12 +31,12 @@ class Threshhold_ElGamal(ElGamal):
     # Summe von 1 bis players + 1 von delta * y 
     def calcSecretKey(self, sKey):
         sKey[0] = 0
-        for i in range (1, self.players + 1):
+        for i in range(1, self.players + 1):
             sKey[0] += self.delta[i] * sKey[i]
         return int(sKey[0])
 
     def keyGen(self):
-        pA = [random.randint(0, self.secPar) for x in range(0,self.players)]
+        pA = [random.randint(0, self.secPar) for x in range(0, self.players)]
 
         pX = [0 for x in range(0, self.players + 1)]
         for n in range(1, self.players + 1):
@@ -46,7 +47,7 @@ class Threshhold_ElGamal(ElGamal):
         pKey = self.pow_mod(self.g, pX[0], self.p)
         pX[0] = 0
         sKey = pX
-        
+
         return pKey, sKey
 
     def encrypt(self, pKey, m):
@@ -59,11 +60,10 @@ class Threshhold_ElGamal(ElGamal):
     # Input: c1 vom Chiffrat und Share von Player p[i]
     # Output: c1 hoch Share
 
-
     # "Threshhold Decrypt" Funktion
     # Input: Output von Ciphertext Share von allen Players
     # Rekonstruiert den Secret Key im Exponent
-
+'''
 
 class FDH_RSA(G):
     def __init__(self):
