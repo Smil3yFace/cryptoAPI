@@ -27,10 +27,10 @@ class ElGamalEncryption:
         return ElGamalCipherText(c1, c2)
 
     @staticmethod
-    def dec(secrect_key: int, key_params: ElGamalKeyParams, cipherText: ElGamalCipherText) -> int:
+    def dec(secret_key: int, key_params: ElGamalKeyParams, cipherText: ElGamalCipherText) -> int:
         group: MultiplicativeGroup = MultiplicativeGroup(key_params.prime)
 
-        shared_key = group.pow_mod(cipherText.c1, secrect_key)
+        shared_key = group.pow_mod(cipherText.c1, secret_key)
         inverse_shared_key = group.mul_invert_mod(shared_key)
 
         return group.mul_mod(cipherText.c2, inverse_shared_key)

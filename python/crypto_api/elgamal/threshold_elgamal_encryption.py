@@ -36,10 +36,10 @@ class ThresholdElGamalEncryption:
         return ElGamalEncryption.dec(shared_secret, key_params, ciphertext)
 
     @staticmethod
-    def calc_shared_secret(private_keys: [int], delta: [int]) -> int:
+    def calc_shared_secret(secret_key: [int], delta: [int]) -> int:
         shared_secret: int = 0
         for i in range(1, len(delta)):
-            shared_secret += delta[i] * private_keys[i]
+            shared_secret += delta[i] * secret_key[i]
         return shared_secret
 
     @staticmethod
