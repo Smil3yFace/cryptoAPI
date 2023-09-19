@@ -7,7 +7,7 @@ from crypto_api.elgamal.elgamal_data_classes import ElGamalCipherText, ElGamalKe
 class ThresholdElGamalEncryption:
 
     @staticmethod
-    def key_gen(numOfPlayers: int, prime: int, generator: int) -> (int, [int]):
+    def key_gen(numOfPlayers: int, prime: int, generator: int) -> (int, int, [int]):
         group: MultiplicativeGroup = MultiplicativeGroup(prime)
         polynom_degree: int = numOfPlayers - 1
         x_coords_of_players: [int] = [x for x in range(0, numOfPlayers + 1)]
@@ -24,7 +24,7 @@ class ThresholdElGamalEncryption:
         public_key: int = group.pow_mod(generator, secret_keys[0])
         secret_keys[0] = 0
 
-        return public_key, secret_keys
+        return delta, public_key, secret_keys
 
     @staticmethod
     def enc(other_public_key: int, key_params: ElGamalKeyParams, message: int) -> ElGamalCipherText:
@@ -48,5 +48,6 @@ class ThresholdElGamalEncryption:
         delta: [int] = [1 for x in range(0, len(x_coords))]
         for i in range(1, len(delta)):
             for j in range(1, len(delta)):
-                delta[i] *= (x_coords[0] - x_coords[j]) / (x_coords[i] - x_coords[j])
+                if i != j:
+                    delta[i] *= int((x_coords[0] - x_coords[j]) / (x_coords[i] - x_coords[j]))
         return delta

@@ -21,6 +21,9 @@ class MultiplicativeGroup:
     def mul_invert_mod(self, x) -> int:
         return x ** (self.__order - 1) % self.__m
 
+    def wrapping(self, x) -> int:
+        return ((x % self.__m) + self.__m) % self.__m
+
     def random_element(self) -> int:
         return random.randint(0, self.__m - 1)
 
