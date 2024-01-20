@@ -99,5 +99,3 @@ def phi(primes):
         result *= primes[0][i] ** (primes[1][i] - 1) * (primes[0][i] - 1)
 
     return result
-
-
