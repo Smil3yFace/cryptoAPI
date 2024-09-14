@@ -1,5 +1,5 @@
-from math import floor, sqrt
 import random
+from math import floor, sqrt
 
 
 def ext_factors(x):
@@ -58,7 +58,10 @@ def gen_prime(a, b):
         if is_prime(i):
             result_list.append(i)
 
-    return random.choice(result_list)
+    if len(result_list) == 0:
+        raise IndexError("No prime number found between {} and {}".format(a, b))
+    else:
+        return random.choice(result_list)
 
 
 # trivial algorithm to test conditions of an element
