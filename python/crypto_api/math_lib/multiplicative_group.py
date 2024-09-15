@@ -19,7 +19,7 @@ class MultiplicativeGroup:
         return result
 
     def mul_invert_mod(self, x) -> int:
-        return x ** (self.__order - 1) % self.__m
+        return (x ** (self.__order - 1)) % self.__m
 
     def wrapping(self, x) -> int:
         return ((x % self.__m) + self.__m) % self.__m

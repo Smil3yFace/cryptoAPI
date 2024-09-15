@@ -1,150 +1,129 @@
+from cramer_shoup.cramer_shoup_data_classes import CramerShoupCipherText
+from cramer_shoup.cramer_shoup_encryption import CramerShoupEncryption
 from crypto_api.math_lib import misc
+from diffie_hellman_key_exchange import diffie_hellman_key_exchange
 from elgamal import threshold_elgamal_encryption, elgamal_data_classes
+from elgamal.elgamal_encryption import ElGamalEncryption
+from math_lib.multiplicative_group import MultiplicativeGroup
+from rsa.fulldomainhash_rsa_encryption import FullDomainHashRSAEncryption
 
 
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
-# h = c.H()
-# g = c.G()
-
-# print(h.add_mod(2,3,6))
-# print(g.pow_mod(2,3,10))
-# print(c.factors(8))
-# print(c.ext_factors(12))
-# print(c.phi(c.ext_factors(6)))
-# print(g.order(9))
-# print(g.mul_invert_mod(2, 5))
-# print(test.order(mod))
-# print(len(set([test.pow_mod(g, x, mod) for x in range(mod)])))
-
-# mod = 877
-# order = c.G().order(mod)
-# g = c.gen_generator(mod)
-
-# print(g)
-# q = set([c.G().pow_mod(g, y, mod) for y in range(mod)])
-# print(len(q), order, q)
-
-# for x in range(1, mod):
-#     if not c.is_generator_simple(x, mod):
-#         continue
-#     r = pow(x, order, mod)
-#     g = set([c.G().pow_mod(x, y, mod) for y in range(mod)])
-#     if r == 1:
-#         print(x, g)
-
-# , [pow(x, y, mod) for y in factors]
-# for mod in range(1,20):
-#     for g in range(2,mod):
-#         if c.is_generator_simple(g, mod):
-#             print(g, mod)
 
 
-# for mod in range(20, 50):
-#     generators = [y for y in range(mod) if len(set([test.pow_mod(y, x, mod) for x in range(mod)])) == mod - 1]
-#     if len(generators) > 0:
-#         print(c.factors(mod - 1))
-#         print(mod, generators)
+def diffie_hellman_example() -> None:
+    p: int = misc.gen_prime(10000, 90000)
+    g = misc.gen_generator(p)
 
-# dh = c.DiffieHellman()
-# (x, gX) = dh.sample()
-# print("x", x)
-# print("gX", gX)
-#
-# (y, gY) = dh.sample()
-# print("y", y)
-# print("gY", gY)
-#
-# aliceKey = dh.key(gY, x)
-# bobKey = dh.key(gX, y)
-#
-# print("alice", aliceKey)
-# print("bob", bobKey)
+    dh_alice = diffie_hellman_key_exchange.DiffieHellmanKeyExchange(p, g)
+    dh_bob = diffie_hellman_key_exchange.DiffieHellmanKeyExchange(p, g)
+
+    dh_alice.generate_shared_key(dh_bob.public_key)
+    dh_bob.generate_shared_key(dh_alice.public_key)
+
+    print("alice: ", dh_alice.to_json_str())
+    print("bob: ", dh_bob.to_json_str())
 
 
-# alice_prime = misc.gen_prime(0, 330)
-# alice_generator = misc.gen_generator(alice_prime)
-#
-# bob_prime = misc.gen_prime(330, 621)
-# bob_generator = misc.gen_generator(bob_prime)
-#
-#
-# Alice = cramer_shoup_encryption.CramerShoupEncryption.key_gen(alice_prime, alice_generator)
-# Bob = cramer_shoup_encryption.CramerShoupEncryption.key_gen(bob_prime, bob_generator)
-#
-#
-# m1 = 7983 % Bob.key_params.prime
-# m2 = 8880 % Bob.key_params.prime
-# print("m1: ", m1)
-# print("m2: ", m2)
-#
-# C1 = cramer_shoup_encryption.CramerShoupEncryption.enc(Bob.public_key, Alice.key_params, m1)
-# C2 = cramer_shoup_encryption.CramerShoupEncryption.enc(Bob.public_key, Alice.key_params, m2)
-# #C3 = {}
-# #for key in C1:
-# #     C3[key] = c.cramer_shoup.mul_mod(Bob, C1[key], C2[key], Bob.p)
-#
-# print("C1: ", C1)
-# print("C2: ", C2)
-# #print("C3: ", C3)
-#
-# dec_m1 = cramer_shoup_encryption.CramerShoupEncryption.dec(Bob.secret_key, Bob.key_params, C1)
-# print("dec m1: ", dec_m1)
-# dec_m2 = cramer_shoup_encryption.CramerShoupEncryption.dec(Bob.secret_key, Bob.key_params, C2)
-# print("dec m2: ", dec_m2)
+def cramer_shoup_example() -> None:
+    alice_prime = misc.gen_prime(0, 330)
+    alice_generator = misc.gen_generator(alice_prime)
 
-# print("homomorphism - Test")
-# dec_m3 = Bob.dec(C3)
+    bob_prime = misc.gen_prime(330, 621)
+    bob_generator = misc.gen_generator(bob_prime)
 
-# print("dec m3: ", dec_m3)
+    alice = CramerShoupEncryption.key_gen(alice_prime, alice_generator)
+    bob = CramerShoupEncryption.key_gen(bob_prime, bob_generator)
 
+    m1 = 7983 % bob.key_params.prime
+    m2 = 8880 % bob.key_params.prime
+    print("m1: ", m1)
+    print("m2: ", m2)
 
-# p = misc.gen_prime(3, 621)
-# g = misc.gen_generator(p)
-#
-# Bob = elgamal_encryption.ElGamalEncryption.key_gen(p, g)
-# Alice = elgamal_encryption.ElGamalEncryption.key_gen(p, g)
-#
-# print("Bob keys: ", Bob.public_key, Bob.secret_key)
-# print("Alice Key: ", Alice.public_key, Alice.secret_key)
-#
-# m = 32
-# print("Original Message", m)
-#
-# mEnc = elgamal_encryption.ElGamalEncryption.enc(Alice.public_key, Bob.key_params, m)
-# print("Encrypted", mEnc.c1, mEnc.c2)
-#
-# mDec = elgamal_encryption.ElGamalEncryption.dec(Alice.secret_key, Alice.key_params, mEnc)
-# print("Decrypted", mDec)
+    c1 = CramerShoupEncryption.enc(bob.public_key, alice.key_params, m1)
+    c2 = CramerShoupEncryption.enc(bob.public_key, alice.key_params, m2)
 
-# ------------------------------- Threshhold El-Gamal -------------------------------------------
-playerCount = 3
-p = misc.gen_prime(10000, 90000)
-g = misc.gen_generator(p)
+    print("c1: ", c1)
+    print("c2: ", c2)
 
-(delta, pKey, sKeys) = threshold_elgamal_encryption.ThresholdElGamalEncryption.key_gen(playerCount, p, g)
+    dec_m1 = CramerShoupEncryption.dec(bob.secret_key, bob.key_params, c1)
+    print("dec m1: ", dec_m1)
+    dec_m2 = CramerShoupEncryption.dec(bob.secret_key, bob.key_params, c2)
+    print("dec m2: ", dec_m2)
 
-print("Secret Keys: ", sKeys)
-print("Public Key: ", pKey)
-
-sKey: int = threshold_elgamal_encryption.ThresholdElGamalEncryption.calc_shared_secret(sKeys, delta)
-print("Calculated Secret Key:", sKey)
-
-m = 2345 % p
-print("Original Message: ", m)
-
-mEnc = threshold_elgamal_encryption.ThresholdElGamalEncryption.enc(pKey, elgamal_data_classes.ElGamalKeyParams(p, g), m)
-print("Encrypted Message: {", mEnc.c1, ", ",mEnc.c2, "}")
-
-mDec = threshold_elgamal_encryption.ThresholdElGamalEncryption.dec(sKeys, delta, elgamal_data_classes.ElGamalKeyParams(p, g), mEnc)
-print("Decrypted Message:", mDec)
+    print("homomorphism - Test")
+    c3 = CramerShoupCipherText()
+    for attr, value in c1.__dict__.items():
+        setattr(
+            c3,
+            attr,
+            MultiplicativeGroup(bob_prime).mul_mod(getattr(c1, attr), getattr(c2, attr))
+        )
+    print("c3: ", c3)
+    dec_m3 = CramerShoupEncryption.dec(bob.secret_key, bob.key_params, c3)
+    print("dec m3: ", dec_m3)
 
 
+def elgamal_example() -> None:
+    p = misc.gen_prime(3, 621)
+    g = misc.gen_generator(p)
 
-# f = c.FDH_RSA()
-# pk, sk = f.key_gen()
-# m = "Hallo"
-# sign = f.sign(sk, m)
-# print("Verifikation:", f.verify(pk, m, sign))
+    Bob = ElGamalEncryption.key_gen(p, g)
+    Alice = ElGamalEncryption.key_gen(p, g)
+
+    print("Bob keys: ", Bob.public_key, Bob.secret_key)
+    print("Alice Key: ", Alice.public_key, Alice.secret_key)
+
+    m = 32
+    print("Original Message", m)
+
+    mEnc = ElGamalEncryption.enc(Alice.public_key, Bob.key_params, m)
+    print("Encrypted", mEnc.c1, mEnc.c2)
+
+    mDec = ElGamalEncryption.dec(Alice.secret_key, Alice.key_params, mEnc)
+    print("Decrypted", mDec)
 
 
+def threshold_elgamal_example() -> None:
+    playerCount = 3
+    p = misc.gen_prime(10000, 90000)
+    g = misc.gen_generator(p)
 
+    (delta, pKey, sKeys) = threshold_elgamal_encryption.ThresholdElGamalEncryption.key_gen(playerCount, p, g)
+
+    print("Secret Keys: ", sKeys)
+    print("Public Key: ", pKey)
+
+    sKey: int = threshold_elgamal_encryption.ThresholdElGamalEncryption.calc_shared_secret(sKeys, delta)
+    print("Calculated Secret Key:", sKey)
+
+    m = 2345 % p
+    print("Original Message: ", m)
+
+    mEnc = threshold_elgamal_encryption.ThresholdElGamalEncryption.enc(pKey,
+                                                                       elgamal_data_classes.ElGamalKeyParams(p, g), m)
+    print("Encrypted Message: {", mEnc.c1, ", ", mEnc.c2, "}")
+
+    mDec = threshold_elgamal_encryption.ThresholdElGamalEncryption.dec(sKeys, delta,
+                                                                       elgamal_data_classes.ElGamalKeyParams(p, g),
+                                                                       mEnc)
+    print("Decrypted Message:", mDec)
+
+
+def fulldomain_rsa_example() -> None:
+    p = misc.gen_prime(10000, 90000)
+    q = misc.gen_prime(10000, 90000)
+
+    f = FullDomainHashRSAEncryption()
+    rsa_keypair = f.key_gen(p, q)
+    m = "Hallo"
+    sign = f.sign(rsa_keypair.secret_key, m)
+    print("Verifikation:", f.verify(rsa_keypair.public_key, m, sign))
+
+
+if __name__ == "__main__":
+    #diffie_hellman_example()
+    #cramer_shoup_example()
+    #elgamal_example()
+    #threshold_elgamal_example()
+    fulldomain_rsa_example()

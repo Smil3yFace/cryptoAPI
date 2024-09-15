@@ -1,4 +1,3 @@
-from random import randint
 from crypto_api.math_lib.multiplicative_group import MultiplicativeGroup
 
 
@@ -7,7 +6,9 @@ class DiffieHellmanKeyExchange:
     def __init__(self, prime: int, generator: int) -> None:
         self.__group = MultiplicativeGroup(prime)
 
+        # a
         self.__secret_key = self.__group.random_element()
+        # A = g^a mod p
         self.__public_key = self.__group.pow_mod(generator, self.__secret_key)
         self.__shared_key = 0
 

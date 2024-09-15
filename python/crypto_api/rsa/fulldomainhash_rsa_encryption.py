@@ -16,4 +16,4 @@ class FullDomainHashRSAEncryption(RSAEncryption):
     def verify(public_key: RSAKeyTuple, message: str, signature: int) -> bool:
         hash_method = hashlib.sha3_512
         h = int(hash_method(message.encode()).hexdigest(), 16)
-        return h % public_key.key == pow(signature, public_key.key, public_key.modul)
+        return h % public_key.modul == pow(signature, public_key.key, public_key.modul)

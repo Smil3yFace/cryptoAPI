@@ -1,7 +1,6 @@
 import math
 import random
 
-from crypto_api.math_lib.multiplicative_group import MultiplicativeGroup
 from crypto_api.rsa.rsa_data_classes import *
 
 
@@ -12,7 +11,7 @@ class RSAEncryption:
         phi: int = (p-1) * (q-1)
 
         e: int = RSAEncryption._sample_e(phi)
-        d: int = (MultiplicativeGroup(phi)).mul_invert_mod(e)
+        d: int = pow(e, -1, phi)
 
         # secret key: (e, N)
         # public key: (d, N)
