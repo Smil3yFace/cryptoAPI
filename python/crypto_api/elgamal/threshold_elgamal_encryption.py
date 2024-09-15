@@ -1,6 +1,7 @@
-from crypto_api.math_lib.multiplicative_group import MultiplicativeGroup
-from crypto_api.elgamal.elgamal_encryption import ElGamalEncryption
+import math_lib.misc
 from crypto_api.elgamal.elgamal_data_classes import ElGamalCipherText, ElGamalKeyParams
+from crypto_api.elgamal.elgamal_encryption import ElGamalEncryption
+from crypto_api.math_lib.multiplicative_group import MultiplicativeGroup
 
 
 ###TODO: UNDER CONSTRUCTION
@@ -11,14 +12,14 @@ class ThresholdElGamalEncryption:
         group: MultiplicativeGroup = MultiplicativeGroup(prime)
         polynom_degree: int = numOfPlayers - 1
         x_coords_of_players: [int] = [x for x in range(0, numOfPlayers + 1)]
-        delta: [int] = ThresholdElGamalEncryption.lagrange_coeff(x_coords_of_players)
-        pA: [int] = [group.random_element() for x in range(0, numOfPlayers)]
+        delta: [int] = math_lib.misc.calc_lagrange_coeff(x_coords_of_players)
+        y_coords_of_players: [int] = [group.random_element() for x in range(0, numOfPlayers)]
 
         # Index 0 is reserved for the shared secret
         secret_keys: [int] = [0 for x in range(0, numOfPlayers + 1)]
         for n in range(1, len(x_coords_of_players)):
             for p in range(0, numOfPlayers):
-                secret_keys[n] += pA[p] * (x_coords_of_players[n] ^ p)
+                secret_keys[n] += y_coords_of_players[p] * (x_coords_of_players[n] ^ p)
 
         secret_keys[0]: [int] = ThresholdElGamalEncryption.calc_shared_secret(secret_keys, delta)
         public_key: int = group.pow_mod(generator, secret_keys[0])
@@ -42,12 +43,3 @@ class ThresholdElGamalEncryption:
             shared_secret += delta[i] * secret_key[i]
         return shared_secret
 
-    @staticmethod
-    def lagrange_coeff(x_coords: [int]) -> [int]:
-        # TODO: Could ends up in math lib
-        delta: [int] = [1 for x in range(0, len(x_coords))]
-        for i in range(1, len(delta)):
-            for j in range(1, len(delta)):
-                if i != j:
-                    delta[i] *= int((x_coords[0] - x_coords[j]) / (x_coords[i] - x_coords[j]))
-        return delta

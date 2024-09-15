@@ -9,7 +9,7 @@ class RSAEncryption:
         phi: int = group.mul_mod((p - 1), (q - 1))
 
         e: int = RSAEncryption.sample_e(phi)
-        d: int = group.mul_invert_mod(e, phi)
+        d: int = group.mul_invert_mod(e)
 
         # secret key: (e, N)
         # public key: (d, N)
@@ -20,9 +20,10 @@ class RSAEncryption:
         return 0
 
     @staticmethod
-    def dec(private_key: RSAKeyTuple, cipherText) -> int:
+    def dec(secret_key: RSAKeyTuple, cipherText: str) -> int:
         return 0
 
+    #TODO
     @staticmethod
     def sample_e(phi: int) -> int:
         e: int = 0

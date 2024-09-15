@@ -1,7 +1,6 @@
-from elgamal import elgamal_encryption, threshold_elgamal_encryption, elgamal_data_classes
 from crypto_api.math_lib import misc
-from crypto_api.cramer_shoup import cramer_shoup_encryption
-from crypto_api.elgamal import elgamal_encryption
+from elgamal import threshold_elgamal_encryption, elgamal_data_classes
+
 
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 # h = c.H()
@@ -119,8 +118,7 @@ def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 
 # ------------------------------- Threshhold El-Gamal -------------------------------------------
 playerCount = 3
-
-p = misc.gen_prime(3, 621)
+p = misc.gen_prime(10000, 90000)
 g = misc.gen_generator(p)
 
 (delta, pKey, sKeys) = threshold_elgamal_encryption.ThresholdElGamalEncryption.key_gen(playerCount, p, g)
@@ -135,7 +133,7 @@ m = 2345 % p
 print("Original Message: ", m)
 
 mEnc = threshold_elgamal_encryption.ThresholdElGamalEncryption.enc(pKey, elgamal_data_classes.ElGamalKeyParams(p, g), m)
-print("Encrypted Message: ", mEnc)
+print("Encrypted Message: {", mEnc.c1, ", ",mEnc.c2, "}")
 
 mDec = threshold_elgamal_encryption.ThresholdElGamalEncryption.dec(sKeys, delta, elgamal_data_classes.ElGamalKeyParams(p, g), mEnc)
 print("Decrypted Message:", mDec)
@@ -147,3 +145,6 @@ print("Decrypted Message:", mDec)
 # m = "Hallo"
 # sign = f.sign(sk, m)
 # print("Verifikation:", f.verify(pk, m, sign))
+
+
+

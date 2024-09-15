@@ -2,7 +2,7 @@ import random
 from math import floor, sqrt
 
 
-def ext_factors(x):
+def ext_factors(x: int) -> (int, int):
     prime_set = []
     prime_set_count = []
     fact = factors(x)
@@ -52,7 +52,7 @@ def gen_generator(m: int) -> int:
     return g
 
 
-def gen_prime(a, b):
+def gen_prime(a: int, b: int) -> int|IndexError:
     result_list = []
     for i in range(a, b):
         if is_prime(i):
@@ -96,9 +96,26 @@ def is_prime(x: int) -> bool:
     return True
 
 
-def phi(primes):
+def phi(primes: [int]) -> int:
     result = 1
     for i in range(len(primes[0])):
         result *= primes[0][i] ** (primes[1][i] - 1) * (primes[0][i] - 1)
 
     return result
+
+
+def calc_lagrange_coeff(x_coords: [int]) -> [int]:
+    delta: [int] = [1 for x in range(0, len(x_coords))]
+    for i in range(1, len(delta)):
+        for j in range(1, len(delta)):
+            if i != j:
+                delta[i] *= int((x_coords[0] - x_coords[j]) / (x_coords[i] - x_coords[j]))
+    return delta
+
+
+def egcd(a: int, b: int) -> (int, int, int):
+    if a == 0:
+        return b, 0, 1
+    else:
+        g, y, x = egcd(b, a % b)
+        return g, x - (b // a) * y, y
