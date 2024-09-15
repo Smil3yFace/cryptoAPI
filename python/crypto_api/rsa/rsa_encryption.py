@@ -1,15 +1,18 @@
+import math
+import random
+
 from crypto_api.math_lib.multiplicative_group import MultiplicativeGroup
 from crypto_api.rsa.rsa_data_classes import *
+
 
 class RSAEncryption:
     @staticmethod
     def key_gen(p: int, q: int) -> RSAKeyPair:
         N: int = p * q
-        group: MultiplicativeGroup = MultiplicativeGroup(N)
-        phi: int = group.mul_mod((p - 1), (q - 1))
+        phi: int = (p-1) * (q-1)
 
-        e: int = RSAEncryption.sample_e(phi)
-        d: int = group.mul_invert_mod(e)
+        e: int = RSAEncryption._sample_e(phi)
+        d: int = (MultiplicativeGroup(phi)).mul_invert_mod(e)
 
         # secret key: (e, N)
         # public key: (d, N)
@@ -17,14 +20,16 @@ class RSAEncryption:
 
     @staticmethod
     def enc(other_public_key: RSAKeyTuple, message: int) -> int:
-        return 0
+        return (message ** other_public_key.key) % other_public_key.modul
 
     @staticmethod
-    def dec(secret_key: RSAKeyTuple, cipherText: str) -> int:
-        return 0
+    def dec(secret_key: RSAKeyTuple, cipher_text: int) -> int:
+        return (cipher_text ** secret_key.key) % secret_key.modul
 
-    #TODO
+
     @staticmethod
-    def sample_e(phi: int) -> int:
-        e: int = 0
+    def _sample_e(phi: int) -> int:
+        e: int = random.randint(0, phi)
+        while e != 1 and math.gcd(e, phi) != 1:
+            e = random.randint(0, phi)
         return e
