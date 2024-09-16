@@ -110,7 +110,7 @@ def threshold_elgamal_example() -> None:
     print("Decrypted Message:", mDec)
 
 
-def fulldomain_rsa_example() -> None:
+def fulldomainhash_rsa_example() -> None:
     p = misc.gen_prime(10000, 90000)
     q = misc.gen_prime(10000, 90000)
 
@@ -126,4 +126,4 @@ if __name__ == "__main__":
     #cramer_shoup_example()
     #elgamal_example()
     #threshold_elgamal_example()
-    fulldomain_rsa_example()
+    fulldomainhash_rsa_example()
