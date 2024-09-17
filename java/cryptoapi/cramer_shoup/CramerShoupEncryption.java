@@ -54,7 +54,7 @@ public class CramerShoupEncryption {
         return new CramerShoupKeyPair(secretKey, publicKey, keyParams);
     }
 
-    public CramerShoupCipherText enc(CramerShoupPublicKey otherPublicKey, CramerShoupKeyParams keyParams, BigInteger message) {
+    public static CramerShoupCipherText enc(CramerShoupPublicKey otherPublicKey, CramerShoupKeyParams keyParams, BigInteger message) {
         CyclicMultiplicativeGroup group = new CyclicMultiplicativeGroup(otherPublicKey.prime);
 
         BigInteger r = new BigInteger(keyParams.prime.bitLength(), new SecureRandom()).mod(keyParams.prime.subtract(BigInteger.ONE));

@@ -105,7 +105,30 @@ public class Main {
 
     }
 
-    static<T> void compare(T firstValue, T secondValue) {
+    public static void cramerShoup() {
+        System.out.println("Start Cramer-Shoup exchange example...");
+        // Define Security Parameter
+        final int secpar = 128;
+
+        // Bob
+        CramerShoupKeyPair bob = CramerShoupEncryption.keyGen(secpar);
+        System.out.println("Bob: " + bob);
+
+        // Alice
+        BigInteger m = new BigInteger("100000");
+        CramerShoupCipherText ciphertext = CramerShoupEncryption.enc(bob.publicKey, bob.keyParams, m);
+
+        //System.out.println("c1: " + ciphertext.c1);
+        //System.out.println("c2: " + ciphertext.c2);
+
+        // Bob
+        BigInteger mprime = CramerShoupEncryption.dec(bob.secretKey, bob.keyParams, ciphertext);
+
+        compare(mprime, m);
+
+    }
+
+    private static<T> void compare(T firstValue, T secondValue) {
         if (firstValue.equals(secondValue)) {
             System.out.println(firstValue + " is equals to " + secondValue);
         } else {
