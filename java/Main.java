@@ -8,6 +8,13 @@ import cryptoapi.rsa.*;
 import java.math.BigInteger;
 
 public class Main {
+	
+	public static void main(String[] args) {
+		// Paramaters
+        int secpar = 4;
+        BigInteger m = BigInteger.valueOf(5);
+        
+        BigInteger[] keys = rsa_keyGen(secpar);
 
 	public static void main(String[] args) {
         diffieHellman();
@@ -137,3 +144,4 @@ public class Main {
         System.out.println();
     }
 }
+
