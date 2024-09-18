@@ -68,9 +68,13 @@ public class CramerShoupEncryption {
         String beta = R_.toString() + R.toString() + P.toString();
         BigInteger h = new BigInteger(1, Objects.requireNonNull(MathMisc.hash(beta.getBytes()))).mod(group.order);
 
-        BigInteger B_h = group.powMod(otherPublicKey.B_, h);
-        BigInteger B_B_h = group.mulMod(otherPublicKey.B, B_h);
-        BigInteger T = group.powMod(B_B_h, r);
+        BigInteger T = group.powMod(
+            group.mulMod(
+                otherPublicKey.B,
+                group.powMod(otherPublicKey.B_, h)
+            ),
+            r
+        );
 
         return new CramerShoupCipherText(R, R_, P, T);
     }

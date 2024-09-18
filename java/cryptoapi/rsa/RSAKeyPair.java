@@ -6,7 +6,7 @@ public class RSAKeyPair {
 
     public final RSAKeyTuple publicKey;
 
-    protected final RSAKeyTuple secretKey;
+    public final RSAKeyTuple secretKey;
 
     public RSAKeyPair(BigInteger publicKey, BigInteger secretKey, BigInteger modul) {
         this.publicKey = new RSAKeyTuple(publicKey, modul);

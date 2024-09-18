@@ -10,7 +10,7 @@ public class MultiplicativeGroup {
 
     public MultiplicativeGroup(BigInteger modulo) {
         this.m = modulo;
-        this.order = MathMisc.phi(MathMisc.summorizeFactors(MathMisc.factorize(modulo)));
+        this.order = MathMisc.phi(MathMisc.summariseFactors(MathMisc.factorize(modulo)));
     }
 
     public BigInteger mulMod(BigInteger x, BigInteger y) {
