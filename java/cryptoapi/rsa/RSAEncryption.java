@@ -1,37 +1,38 @@
 package cryptoapi.rsa;
 
-import cryptoapi.MathLib;
+import cryptoapi.math_lib.MathMisc;
 
 import java.math.BigInteger;
 
-public class RSAEncryption {
+public class RSAEncryption{
+
     public static RSAKeyPair keyGen(int secpar) {
         // Paramaters
-        BigInteger p = MathLib.randomPrime(secpar);
-        BigInteger q = MathLib.randomPrime(secpar);
+        BigInteger p = MathMisc.randomBigIntPrime(secpar);
+        BigInteger q = MathMisc.randomBigIntPrime(secpar);
         BigInteger N = p.multiply(q);
-        BigInteger phi = MathLib.mul((p.subtract(BigInteger.ONE)), q.subtract(BigInteger.ONE), N);
+        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)).mod(N);
 
         BigInteger e = sampleE(phi);
-        BigInteger d = MathLib.inverseEGCD(e, phi);
+        BigInteger d = e.modPow(BigInteger.ONE.negate(), phi);
 
         // sk = e, N
         // pk = d, N
         return new RSAKeyPair(d, e, N);
     }
 
-    public static BigInteger sign(RSAKeyPair keyPair, BigInteger m) {
-        return MathLib.exp(MathLib.hash(m), keyPair.secretKey.key, keyPair.secretKey.modul);
+    public static BigInteger enc(RSAKeyTuple otherPublicKey, BigInteger message) {
+        return message.modPow(otherPublicKey.key, otherPublicKey.modul);
     }
 
-    public static boolean verify(RSAKeyTuble publicKey, BigInteger m, BigInteger sigma) {
-        return MathLib.exp(sigma, publicKey.key, publicKey.modul).equals(MathLib.hash(m).mod(publicKey.modul));
+    public static BigInteger dec(RSAKeyTuple privateKey, BigInteger ciphertext) {
+        return ciphertext.modPow(privateKey.key, privateKey.modul);
     }
 
     public static BigInteger sampleE(BigInteger phi) {
         BigInteger e;
         do {
-            e = MathLib.random(phi);
+            e = MathMisc.randomBigInt(phi.bitLength()).mod(phi);
         } while (!e.gcd(phi).equals(BigInteger.ONE) && !e.equals(BigInteger.ONE));
         return e;
     }

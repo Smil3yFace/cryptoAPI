@@ -14,4 +14,14 @@ public class CramerShoupCipherText {
         this.P = P;
         this.T = T;
     }
+
+    public String toString() {
+        String s = "{";
+        s += "R: " + this.R;
+        s += ", R_: " + this.R_;
+        s += ", P: " + this.P;
+        s += ", T: " + this.T;
+        s += "}";
+        return s;
+    }
 }

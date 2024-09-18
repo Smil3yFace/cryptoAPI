@@ -5,16 +5,12 @@ import java.math.BigInteger;
 public class ElGamalKeyPair {
     public final ElGamalKeyParams keyParams;
     public final BigInteger publicKey;
-    private final BigInteger secretKey;
+    public final BigInteger secretKey;
 
     protected ElGamalKeyPair(ElGamalKeyParams keyParams, BigInteger secretKey, BigInteger publicKey) {
         this.secretKey = secretKey;
         this.publicKey = publicKey;
         this.keyParams = keyParams;
-    }
-
-    protected BigInteger getSecretKey() {
-        return this.secretKey;
     }
 
     @Override

@@ -10,4 +10,13 @@ public class CramerShoupKeyPair {
         this.publicKey = publicKey;
         this.keyParams = keyParams;
     }
+
+    public String toString() {
+        String s = "{";
+        s += "secretKey: " + this.secretKey.toString();
+        s += ", publicKey: " + this.publicKey.toString();
+        s += ", keyParams: " + this.keyParams.toString();
+        s += "}";
+        return s;
+    }
 }

@@ -4,19 +4,19 @@ import java.math.BigInteger;
 
 public class RSAKeyPair {
 
-    public final RSAKeyTuble publicKey;
+    public final RSAKeyTuple publicKey;
 
-    protected final RSAKeyTuble secretKey;
+    protected final RSAKeyTuple secretKey;
 
     public RSAKeyPair(BigInteger publicKey, BigInteger secretKey, BigInteger modul) {
-        this.publicKey = new RSAKeyTuble(publicKey, modul);
-        this.secretKey = new RSAKeyTuble(secretKey, modul);
+        this.publicKey = new RSAKeyTuple(publicKey, modul);
+        this.secretKey = new RSAKeyTuple(secretKey, modul);
     }
 
     public String toString() {
         String s = "{";
         s += "publicKey: " + this.publicKey;
-        s += ", secrectKey: " + this.secretKey;
+        s += ", secretKey: " + this.secretKey;
         s += "}";
         return s;
     }

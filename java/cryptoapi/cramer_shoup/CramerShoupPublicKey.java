@@ -18,4 +18,16 @@ public class CramerShoupPublicKey {
         this.g_ = g_;
         this.prime = prime;
     }
+
+    public String toString() {
+        String s = "{";
+        s += "A: " + this.A;
+        s += ", B: " + this.B;
+        s += ", B_: " + this.B_;
+        s += ", generator: " + this.generator;
+        s += ", g_: " + this.g_;
+        s += ", prime: " + this.prime;
+        s += "}";
+        return s;
+    }
 }

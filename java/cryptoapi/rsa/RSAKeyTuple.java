@@ -2,11 +2,11 @@ package cryptoapi.rsa;
 
 import java.math.BigInteger;
 
-public class RSAKeyTuble {
+public class RSAKeyTuple {
     public final BigInteger key;
     public final BigInteger modul;
 
-    public RSAKeyTuble(BigInteger key, BigInteger modulo) {
+    public RSAKeyTuple(BigInteger key, BigInteger modulo) {
         this.key = key;
         this.modul = modulo;
     }

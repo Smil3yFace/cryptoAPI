@@ -20,5 +20,17 @@ public class CramerShoupSecretKey {
         this.w = w;
         this.w_ = w_;
     }
+
+    public String toString() {
+        String s = "{";
+        s += "x: " + this.x;
+        s += ", y: " + this.y;
+        s += ", z: " + this.z;
+        s += ", z_: " + this.z_;
+        s += ", w: " + this.w;
+        s += ", w_: " + this.w_;
+        s += "}";
+        return s;
+    }
 }
 

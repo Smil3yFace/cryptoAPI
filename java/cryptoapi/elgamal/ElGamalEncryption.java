@@ -1,34 +1,41 @@
 package cryptoapi.elgamal;
 
-import cryptoapi.MathLib;
+import cryptoapi.math_lib.CyclicMultiplicativeGroup;
+import cryptoapi.math_lib.MathMisc;
 
 import java.math.BigInteger;
 
 public class ElGamalEncryption {
 
     public static ElGamalKeyPair keyGen(int secPar) {
-        BigInteger p = MathLib.randomPrime(secPar);
-        ElGamalKeyParams publicParams = new ElGamalKeyParams(MathLib.random(p), p);
-        BigInteger secretKey = MathLib.random(publicParams.prime);
-        BigInteger publicKey = MathLib.exp(publicParams.generator, secretKey, publicParams.prime);
+        CyclicMultiplicativeGroup group = new CyclicMultiplicativeGroup(MathMisc.randomBigIntPrime(secPar));
+
+        ElGamalKeyParams publicParams = new ElGamalKeyParams(group.randomElement(), group.m);
+        BigInteger secretKey = group.randomElement();
+        BigInteger publicKey = group.powMod(publicParams.generator, secretKey);
 
         return new ElGamalKeyPair(publicParams, secretKey, publicKey);
     }
 
-    public static BigInteger[] enc(BigInteger otherPublicKey, ElGamalKeyParams keyParams, BigInteger message) {
-        BigInteger y = MathLib.random(keyParams.prime);
-        BigInteger c1 = MathLib.exp(keyParams.generator, y, keyParams.prime);
+    public static ElGamalCipherText enc(BigInteger otherPublicKey, ElGamalKeyParams keyParams, BigInteger message) {
+        CyclicMultiplicativeGroup group = new CyclicMultiplicativeGroup(keyParams.prime);
 
-        BigInteger c2prime = MathLib.exp(otherPublicKey, y, keyParams.prime);
-        BigInteger c2 = MathLib.mul(c2prime, message, keyParams.prime);
+        BigInteger y = group.randomElement();
+        BigInteger c1 = group.powMod(keyParams.generator, y);
 
-        return new BigInteger[] { c1, c2 };
+        BigInteger c2Prime = group.powMod(otherPublicKey, y);
+        BigInteger c2 = group.mulMod(c2Prime, message);
+
+        return new ElGamalCipherText(c1, c2);
     }
 
-    public static BigInteger dec(ElGamalKeyPair keypair, BigInteger c1, BigInteger c2) {
-        BigInteger k = MathLib.exp(c1, keypair.getSecretKey(), keypair.keyParams.prime);
-        BigInteger kinv = MathLib.inverseFermat(k, keypair.keyParams.prime);
-        BigInteger m = MathLib.mul(c2, kinv, keypair.keyParams.prime);
-        return m;
+    public static BigInteger dec(ElGamalKeyPair keypair, ElGamalCipherText cipherText) {
+        CyclicMultiplicativeGroup group = new CyclicMultiplicativeGroup(keypair.keyParams.prime);
+
+        // Reconstructing Shared key
+        BigInteger k = group.powMod(cipherText.c1, keypair.secretKey);
+        BigInteger kinv = group.mulInvertMod(k);
+
+        return group.mulMod(cipherText.c2, kinv);
     }
 }

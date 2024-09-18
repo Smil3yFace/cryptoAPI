@@ -5,6 +5,7 @@ import cryptoapi.math_lib.MathMisc;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 public class CramerShoupEncryption {
 
@@ -65,7 +66,7 @@ public class CramerShoupEncryption {
         BigInteger P = group.mulMod(A_r, message);
 
         String beta = R_.toString() + R.toString() + P.toString();
-        BigInteger h = new BigInteger(1, MathMisc.hash(beta.getBytes())).mod(group.order);
+        BigInteger h = new BigInteger(1, Objects.requireNonNull(MathMisc.hash(beta.getBytes()))).mod(group.order);
 
         BigInteger B_h = group.powMod(otherPublicKey.B_, h);
         BigInteger B_B_h = group.mulMod(otherPublicKey.B, B_h);
@@ -79,7 +80,7 @@ public class CramerShoupEncryption {
         CyclicMultiplicativeGroup group = new CyclicMultiplicativeGroup(keyParams.prime);
 
         String beta = ciphertext.R_.toString() + ciphertext.R.toString() + ciphertext.P.toString();
-        BigInteger h = new BigInteger(1, MathMisc.hash(beta.getBytes())).mod(group.order);
+        BigInteger h = new BigInteger(1, Objects.requireNonNull(MathMisc.hash(beta.getBytes()))).mod(group.order);
 
         BigInteger T_Val1 = group.mulMod(
                 group.powMod(ciphertext.R, secretKey.z),

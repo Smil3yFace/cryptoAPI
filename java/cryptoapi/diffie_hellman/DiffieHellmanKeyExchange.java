@@ -1,36 +1,29 @@
-package cryptoapi.diffiehellman;
+package cryptoapi.diffie_hellman;
 
-import cryptoapi.MathLib;
-
+import cryptoapi.math_lib.CyclicMultiplicativeGroup;
+import cryptoapi.math_lib.MathMisc;
 import java.math.BigInteger;
+
 public class DiffieHellmanKeyExchange {
-    private final BigInteger public_prime;
-    private final BigInteger publicKey;
-    private final BigInteger secretKey;
+    public final BigInteger publicKey;
+    public final BigInteger secretKey;
     private BigInteger sharedKey = null;
 
+    private final CyclicMultiplicativeGroup group;
+
     public DiffieHellmanKeyExchange(BigInteger prime, BigInteger generator) {
-        this.public_prime = prime;
-        this.secretKey = MathLib.random(prime);
-        this.publicKey = MathLib.exp(generator, secretKey, prime);
+        this.group = new CyclicMultiplicativeGroup(prime);
+        this.secretKey = this.group.randomElement();
+        this.publicKey = this.group.powMod(generator, secretKey);
     }
 
     public void generateShareKey(BigInteger otherPublicKey) {
-        this.sharedKey = MathLib.exp(otherPublicKey, this.secretKey, this.public_prime);
+        this.sharedKey = this.group.powMod(otherPublicKey, this.secretKey);
     }
 
     public BigInteger getSharedKey() {
         return this.sharedKey;
     }
-
-    public BigInteger getPublicKey() {
-        return this.publicKey;
-    }
-
-    public BigInteger getSecretKey() {
-        return this.secretKey;
-    }
-
 
     @Override
     public String toString() {
